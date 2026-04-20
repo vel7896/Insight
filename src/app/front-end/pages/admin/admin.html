@@ -1,0 +1,113 @@
+<div class="admin-wrap">
+  <div class="top-header">
+    <h2>Admin Dashboard <span>Platform Oversights</span></h2>
+    <p>Monitor platform analytics, users count, datasets, and storage sizes.</p>
+  </div>
+
+  <div *ngIf="loading" class="data-state loading-state">
+    <div class="spinner"></div> Loading Admin Data...
+  </div>
+
+  <ng-container *ngIf="!loading && analytics">
+    <!-- Platform Analytics -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">U</div>
+        <div class="kpi-value">{{ analytics.totalUsers }}</div>
+        <div class="kpi-label">Total Users</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon bar">D</div>
+        <div class="kpi-value">{{ analytics.totalDatasets }}</div>
+        <div class="kpi-label">Total Datasets</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon line">R</div>
+        <div class="kpi-value">{{ analytics.totalReports }}</div>
+        <div class="kpi-label">Total Reports</div>
+      </div>
+    </div>
+
+    <div class="oversight-grid">
+      <!-- Users & Storage Table -->
+      <div class="oversight-card table-card">
+        <div class="oc-header">
+          <h3>Users Overview & Storage</h3>
+        </div>
+        <div class="oc-body">
+          <table class="users-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Datasets</th>
+                <th>Reports</th>
+                <th>Total Storage</th>
+                <th>Joined Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of usersStorage">
+                <td>{{ u.name }}</td>
+                <td class="email-col">{{ u.email }}</td>
+                <td>{{ u.datasetCount }}</td>
+                <td>{{ u.reportCount }}</td>
+                <td><span class="storage-badge">{{ formatBytes(u.storageSize) }}</span></td>
+                <td>{{ u.createdAt | date:'shortDate' }}</td>
+                <td>
+                  <button class="delete-btn" (click)="deleteUser(u._id, u.name)" title="Delete User">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="usersStorage.length === 0">
+                <td colspan="7" class="text-center">No users found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datasets & Reports Oversight Lists -->
+    <div class="oversight-grid split">
+      <div class="oversight-card">
+        <div class="oc-header">
+          <h3>Recent Datasets</h3>
+        </div>
+        <div class="oc-body list-body">
+          <div class="list-item" *ngFor="let ds of analytics.recentDatasets">
+            <div class="li-info">
+              <h4>{{ ds.name }}</h4>
+              <p>Uploaded by {{ ds.userId?.name }} ({{ ds.userId?.email }})</p>
+            </div>
+            <div class="li-meta">
+              {{ ds.createdAt | date:'shortDate' }}
+            </div>
+          </div>
+          <div class="list-item" *ngIf="analytics.recentDatasets?.length === 0">No datasets found.</div>
+        </div>
+      </div>
+
+      <div class="oversight-card">
+        <div class="oc-header">
+          <h3>Recent Reports</h3>
+        </div>
+        <div class="oc-body list-body">
+          <div class="list-item" *ngFor="let rp of analytics.recentReports">
+            <div class="li-info">
+              <h4>{{ rp.name }}</h4>
+              <p>Created by {{ rp.userId?.name }} ({{ rp.userId?.email }})</p>
+            </div>
+            <div class="li-meta">
+              {{ rp.createdAt | date:'shortDate' }}
+            </div>
+          </div>
+          <div class="list-item" *ngIf="analytics.recentReports?.length === 0">No reports found.</div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

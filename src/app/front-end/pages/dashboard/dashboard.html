@@ -1,0 +1,228 @@
+<div class="dashboard-wrap">
+
+  <!-- TOP NAV/HEADER BLOCK -->
+  <div class="top-header">
+    <div class="titles">
+      <h2>{{ selectedDatasetName || 'Dashboard' }} <span>— Overview</span></h2>
+      <p>Auto-generated visualizations processed natively by Python AI Analytics.</p>
+    </div>
+    
+    <div class="actions">
+      <!-- Slicer/Filters UI -->
+      <div class="slicer-container" *ngIf="availableFilters.length > 0">
+        <select class="dataset-select" (change)="onFilterSelect($event)" [value]="selectedFilterLabel || ''">
+          <option value="">All Categories</option>
+          <option *ngFor="let filter of availableFilters" [value]="filter">
+            {{ filter }}
+          </option>
+        </select>
+        <button class="clear-btn" *ngIf="selectedFilterLabel" (click)="clearFilter()" title="Clear Filter">✕</button>
+      </div>
+
+      <select class="dataset-select" (change)="onDatasetSelect($event)" *ngIf="datasets.length > 0">
+        <option *ngFor="let ds of datasets" [value]="ds._id || ds.id" [selected]="(ds._id || ds.id) === selectedDatasetId">
+          {{ ds.name }} ▼
+        </option>
+      </select>
+      <!-- Export Dropdown -->
+      <div class="export-dropdown" [class.open]="exportMenuOpen">
+        <button class="export-btn" (click)="toggleExportMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="export-menu" *ngIf="exportMenuOpen">
+          <button class="export-menu-item" (click)="exportPdf()">
+            <span class="em-icon em-pdf">PDF</span> Export as PDF
+          </button>
+          <button class="export-menu-item" (click)="exportPbix()">
+            <span class="em-icon em-pbix">PBIX</span> Export as PBIX
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-state loading-state" *ngIf="isLoading">
+    <div class="spinner"></div> Engaging Python Analytics Engine...
+  </div>
+  
+  <div class="data-state error-state" *ngIf="errorMessage && !isLoading">
+    {{ errorMessage }}
+  </div>
+
+  <div class="dashboard-content" *ngIf="!isLoading && !errorMessage && kpis">
+    
+    <!-- KPI BLOCKS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">#</div>
+        <div class="kpi-value">{{ kpis.records }}</div>
+        <div class="kpi-label">Total Records</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon line">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        </div>
+        <div class="kpi-value">{{ kpis.k1.value }}</div>
+        <div class="kpi-label">{{ kpis.k1.label }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon bar">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>
+        </div>
+        <div class="kpi-value">{{ kpis.k2.value }}</div>
+        <div class="kpi-label">{{ kpis.k2.label }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon blue">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        </div>
+        <div class="kpi-value">{{ kpis.k3.value }}</div>
+        <div class="kpi-label">{{ kpis.k3.label }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon line">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"></path></svg>
+        </div>
+        <div class="kpi-value">{{ kpis.k4.value }}</div>
+        <div class="kpi-label">{{ kpis.k4.label }}</div>
+      </div>
+    </div>
+
+    <!-- CHARTS GRID -->
+    <div class="charts-grid">
+      
+      <!-- Chart 1: Bar -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">BAR</span> {{ barChartData?.datasets?.[0]?.label || 'Frequency' }}</div>
+          <div class="cc-toggles">
+            <button class="active">Bar</button><button>Line</button><button>Pie</button><button>Area</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="barChartData">
+          <canvas baseChart [data]="barChartData" [options]="globalChartOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Pie -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">PIE</span> Distribution / Area</div>
+          <div class="cc-toggles">
+             <button>Bar</button><button>Line</button><button class="active">Pie</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="pieChartData">
+          <canvas baseChart [data]="pieChartData" [options]="pieOptions" [type]="'pie'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 3: Line -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">LINE</span> Profit / Revenue</div>
+          <div class="cc-toggles">
+             <button>Bar</button><button class="active">Line</button><button>Pie</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="lineChartData">
+          <canvas baseChart [data]="lineChartData" [options]="globalChartOptions" [type]="'line'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Scatter -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">SCATTER</span> Variance Correlation</div>
+          <div class="cc-toggles">
+             <button>Bar</button><button>Line</button><button class="active">Scatter</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="scatterChartData">
+          <canvas baseChart [data]="scatterChartData" [options]="globalChartOptions" [type]="'scatter'"></canvas>
+        </div>
+      </div>
+      
+      <!-- Chart 5: Doughnut -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">DOUGHNUT</span> Product</div>
+          <div class="cc-toggles">
+             <button class="active">Doughnut</button><button>Pie</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="pieChartData">
+          <canvas baseChart [data]="pieChartData" [options]="doughnutOptions" [type]="'doughnut'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 6: Area (mock mapped as Line with fill) -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">AREA</span> Capacity Fill</div>
+          <div class="cc-toggles">
+             <button class="active">Area</button><button>Line</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="lineChartData">
+          <canvas baseChart [data]="lineChartData" [options]="globalChartOptions" [type]="'line'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 7: Histogram -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">HISTOGRAM</span> Density Distribution</div>
+          <div class="cc-toggles">
+             <button class="active">Histogram</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="histogramChartData">
+          <canvas baseChart [data]="histogramChartData" [options]="globalChartOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 8: Stacked Bar -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">STACKED BAR</span> Segment Breakdown</div>
+          <div class="cc-toggles">
+             <button class="active">Stacked</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="stackedBarChartData">
+          <canvas baseChart [data]="stackedBarChartData" [options]="stackedBarOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 9: Range -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">RANGE</span> Expected Variance</div>
+          <div class="cc-toggles">
+             <button class="active">Range</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="rangeChartData">
+          <canvas baseChart [data]="rangeChartData" [options]="globalChartOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 10: Semicircle Donut -->
+      <div class="chart-card">
+        <div class="cc-header">
+          <div class="cc-title"><span class="badge">SEMICIRCLE</span> Progress Gauge</div>
+          <div class="cc-toggles">
+             <button class="active">Gauge</button>
+          </div>
+        </div>
+        <div class="cc-body" *ngIf="semicircleChartData">
+          <canvas baseChart [data]="semicircleChartData" [options]="semicircleOptions" [type]="'doughnut'"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

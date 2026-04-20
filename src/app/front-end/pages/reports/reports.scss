@@ -1,0 +1,374 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.reports-container {
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 30px;
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  p {
+    margin: 0;
+    color: #9ba1a6;
+    font-size: 0.95rem;
+  }
+}
+
+/* Grids */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.report-card {
+  background: #1c1f2b;
+  border-radius: 12px;
+  border: 1px solid #282c3e;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #202433;
+    border-color: #383e54;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .icon-wrapper {
+      background: rgba(0, 180, 216, 0.1);
+      color: #00b4d8;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 16px;
+    }
+
+    .titles {
+      flex: 1;
+      
+      h3 {
+        margin: 0 0 4px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #e4e7eb;
+      }
+      
+      .subtext {
+        font-size: 0.85rem;
+        color: #8c92a0;
+      }
+    }
+
+    .chevron {
+      color: #8c92a0;
+    }
+  }
+
+  .card-footer {
+    padding-top: 16px;
+    border-top: 1px solid #282c3e;
+    font-size: 0.85rem;
+    color: #8c92a0;
+  }
+}
+
+/* Loading/Error States */
+.data-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #8c92a0;
+  
+  &.error-state {
+    color: #ff4d4f;
+    background: rgba(255, 77, 79, 0.05);
+    border-radius: 12px;
+  }
+
+  &.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+}
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top-color: #00b4d8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* ==================== 
+   DETAIL VIEW 
+====================== */
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .back-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    
+    &:hover {
+      background: #282c3e;
+    }
+  }
+}
+
+.export-actions {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+
+  .action-box {
+    background: #1c1f2b;
+    border: 1px solid #282c3e;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+
+    svg {
+      margin-bottom: 8px;
+    }
+
+    &:hover {
+      background: #202433;
+      transform: translateY(-2px);
+    }
+
+    /* Colors matching mockup */
+    .csv-color { color: #52c41a; }
+    .json-color { color: #1890ff; }
+    .txt-color { color: #faad14; }
+    .pdf-color { color: #ff4d4f; }
+    .pbix-color { color: #e3bc08; } /* PowerBI Yellow */
+  }
+}
+
+.report-overview {
+  background: #1c1f2b;
+  border: 1px solid #282c3e;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+
+  h3 {
+    margin: 0 0 10px 0;
+    color: #1890ff;
+    font-size: 1.25rem;
+  }
+
+  p {
+    color: #8c92a0;
+    margin: 0 0 20px 0;
+    font-size: 0.9rem;
+  }
+
+  .overview-pills {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 0.95rem;
+
+    span {
+      background: #12141c;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #282c3e;
+      
+      strong { color: #fff; }
+    }
+  }
+}
+
+.metrics-section {
+  margin-bottom: 30px;
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 0 0 20px 0;
+    font-weight: 600;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .metric-card {
+    background: #1c1f2b;
+    border: 1px solid #282c3e;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+
+    .metric-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      
+      &.blue { color: #1890ff; }
+      &.line { color: #13c2c2; }
+      &.bar { color: #722ed1; }
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      color: #8c92a0;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+.summary-section {
+  background: #1c1f2b;
+  border: 1px solid #282c3e;
+  border-radius: 12px;
+  padding: 24px;
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      color: #8c92a0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+/* ──────────────────────────────────────
+   RESPONSIVE BREAKPOINTS
+────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .reports-container { padding: 24px; }
+
+  .reports-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .export-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .reports-container { padding: 16px; }
+
+  .page-header h1 { font-size: 1.4rem; }
+
+  .reports-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .export-actions {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    .action-box {
+      padding: 18px 12px;
+      font-size: 0.85rem;
+    }
+  }
+
+  .metrics-section .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .detail-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    h2 { font-size: 1.2rem; }
+  }
+
+  .overview-pills {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .export-actions {
+    grid-template-columns: 1fr;
+  }
+}

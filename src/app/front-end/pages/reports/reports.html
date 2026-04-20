@@ -1,0 +1,126 @@
+<div class="reports-container">
+  
+  <!-- LIST VIEW -->
+  <ng-container *ngIf="viewMode === 'list'">
+    <div class="page-header">
+      <h1>Reports</h1>
+      <p>Select a dataset to view its report and export options.</p>
+    </div>
+
+    <div class="data-state loading-state" *ngIf="isLoading">
+      <div class="spinner"></div> Fetching Analytical Reports...
+    </div>
+
+    <div class="data-state empty-state" *ngIf="!isLoading && reports.length === 0 && !errorMessage">
+      No analytical reports exist. Upload a dataset to generate them.
+    </div>
+
+    <div class="data-state error-state" *ngIf="!isLoading && errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="reports-grid" *ngIf="!isLoading && reports.length > 0">
+      <div class="report-card" *ngFor="let rep of reports" (click)="viewDetail(rep)">
+        <div class="card-header">
+          <div class="icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div class="titles">
+            <h3>{{ rep.name }}</h3>
+            <span class="subtext">{{ rep.records }} records &bull; {{ rep.columns }} columns</span>
+          </div>
+          <div class="chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+        </div>
+        <div class="card-footer">
+          {{ rep.numeric }} numeric &nbsp;&nbsp; {{ rep.categorical }} categorical
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- DETAIL VIEW -->
+  <ng-container *ngIf="viewMode === 'detail' && activeReport">
+    <div class="detail-header">
+      <button class="back-btn" (click)="backToList()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>
+      <h2>Export & Share</h2>
+    </div>
+
+    <div class="export-actions">
+      <div class="action-box csv" (click)="exportCSV()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="csv-color" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+        <span>Export CSV</span>
+      </div>
+
+      <div class="action-box json" (click)="exportJSON()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="json-color" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        <span>Export JSON</span>
+      </div>
+
+      <div class="action-box text" (click)="exportText()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="txt-color" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>Text Report</span>
+      </div>
+
+      <div class="action-box pdf" (click)="triggerPrint()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="pdf-color" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        <span>Print / PDF</span>
+      </div>
+
+      <div class="action-box pbix" (click)="exportPBIX()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" class="pbix-color" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        <span>Export PBIX</span>
+      </div>
+    </div>
+
+    <div class="report-overview">
+      <h3>{{ activeReport.name }}</h3>
+      <p>
+        {{ activeReport.records }} records &bull; {{ activeReport.columns }} columns &bull; Generated Now
+      </p>
+      <div class="overview-pills">
+        <span><strong>{{ activeReport.numeric }}</strong> Numeric</span>
+        <span><strong>{{ activeReport.categorical }}</strong> Categorical</span>
+        <span><strong>0</strong> Date</span>
+      </div>
+    </div>
+
+    <div class="metrics-section">
+      <h3>Key Metrics</h3>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue">#</div>
+          <div class="metric-value">{{ activeReport.records }}</div>
+          <div class="metric-label">Total Records</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon line">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
+          <div class="metric-value">{{ activeReport.totalStr }}</div>
+          <div class="metric-label">Total variance_score</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon bar">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>
+          </div>
+          <div class="metric-value">{{ activeReport.avgStr }}</div>
+          <div class="metric-label">Avg target_variance</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <h3>Executive Summary</h3>
+      <ul>
+        <li *ngFor="let sim of activeReport.missingValuesSummary; let i = index">
+          {{ i + 1 }}. {{ sim }}
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+
+</div>

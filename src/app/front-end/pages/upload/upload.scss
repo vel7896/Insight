@@ -1,0 +1,222 @@
+.upload-container {
+  padding: 2.5rem 4rem;
+  background-color: #020617;
+  min-height: calc(100vh - 64px);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .upload-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    width: 100%;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -0.025em;
+    }
+
+    p {
+      color: #8b949e;
+      font-size: 1.125rem;
+    }
+  }
+
+  .drop-zone {
+    width: 100%;
+    max-width: 800px;
+    background-color: #0d1117;
+    border: 2px dashed #30363d;
+    border-radius: 16px;
+    padding: 5rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(0, 163, 255, 0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    &:hover, &.dragging {
+      border-color: #00a3ff;
+      background-color: rgba(0, 163, 255, 0.02);
+      transform: translateY(-2px);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .upload-icon {
+        color: #00a3ff;
+        transform: translateY(-5px);
+      }
+    }
+
+    &.dragging {
+      border-style: solid;
+      box-shadow: 0 0 30px rgba(0, 163, 255, 0.1);
+    }
+
+    .drop-zone-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      position: relative;
+      z-index: 1;
+
+      .upload-icon {
+        color: #8b949e;
+        transition: all 0.3s ease;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      p {
+        color: #8b949e;
+        margin: 0;
+      }
+    }
+  }
+
+  .upload-list {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 4rem;
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .clear-btn {
+        background: none;
+        border: none;
+        color: #8b949e;
+        font-size: 0.875rem;
+        cursor: pointer;
+        &:hover {
+          color: white;
+        }
+      }
+    }
+
+    .upload-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .upload-item {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+
+      .item-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+
+        .file-icon {
+          color: #8b949e;
+        }
+
+        .file-details {
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+
+          .file-name {
+            font-weight: 500;
+            font-size: 0.9375rem;
+          }
+
+          .file-status {
+            font-size: 0.75rem;
+            color: #8b949e;
+            text-transform: capitalize;
+          }
+        }
+      }
+
+      .progress-container {
+        height: 4px;
+        background-color: #21262d;
+        border-radius: 2px;
+        overflow: hidden;
+
+        .progress-bar {
+          height: 100%;
+          background-color: #00a3ff;
+          transition: width 0.3s ease;
+        }
+      }
+
+      &.success {
+        border-color: rgba(0, 208, 132, 0.3);
+        .progress-bar {
+          background-color: #00d084;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .upload-container {
+    padding: 1.5rem 1rem;
+
+    .upload-header h1 { font-size: 1.75rem; }
+
+    .drop-zone {
+      padding: 3rem 1.5rem;
+      h2 { font-size: 1.25rem; }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .upload-container {
+    padding: 1rem;
+
+    .upload-header {
+      h1 { font-size: 1.4rem; }
+      p  { font-size: 0.95rem; }
+    }
+
+    .drop-zone {
+      padding: 2rem 1rem;
+      border-radius: 12px;
+      .drop-zone-content h2 { font-size: 1.1rem; }
+    }
+  }
+}
+

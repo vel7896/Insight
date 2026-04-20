@@ -1,0 +1,85 @@
+<div class="profile-container" *ngIf="authService.mongoUser$ | async as user">
+  <div class="profile-header">
+    <h1>User Profile</h1>
+    <p>Manage your account information and preferences.</p>
+  </div>
+
+  <div class="profile-grid">
+    <!-- Sidebar -->
+    <div class="profile-sidebar">
+      <div class="card profile-pic-card">
+        <div class="avatar-container">
+          <div class="avatar-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#2c343d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+        <span class="user-email">{{ user.email }}</span>
+        <button class="secondary-btn">Change Profile Picture</button>
+      </div>
+
+      <div class="card stats-card">
+        <h3>QUICK STATS</h3>
+        <div class="stat-items" *ngIf="userStats$ | async as stats; else loadingData">
+          <div class="stat-item">
+            <span>Dashboards</span>
+            <span class="stat-value">{{ stats.dashboards }}</span>
+          </div>
+          <div class="stat-item">
+            <span>Datasets</span>
+            <span class="stat-value">{{ stats.datasets }}</span>
+          </div>
+          <div class="stat-item">
+            <span>Member Since</span>
+            <span class="stat-value">{{ stats.memberSince | date:'MMMM yyyy' }}</span>
+          </div>
+        </div>
+        <ng-template #loadingData>
+          <div class="stat-items">Loading...</div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="profile-main">
+      <div class="card info-card">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a3ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <h2>Personal Information</h2>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" [value]="user.name" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" [value]="user.email" disabled>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="primary-btn" (click)="updateInformation()">Update Information</button>
+        </div>
+      </div>
+
+      <div class="card security-card">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00a3ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <h2>Security</h2>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" value="********">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" value="********">
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="outline-btn" (click)="changePassword()">Change Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

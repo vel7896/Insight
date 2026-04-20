@@ -1,0 +1,112 @@
+<div class="datasets-container">
+  <div class="page-header">
+    <div class="header-titles">
+      <h1>Datasets</h1>
+      <p>Manage your uploaded data files.</p>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn clear-btn" (click)="clearAll()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        Clear All
+      </button>
+      <button class="action-btn upload-btn" routerLink="/upload">
+        Upload New
+      </button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header-title">
+      All Datasets ({{ datasets.length }})
+    </div>
+    
+    <div class="data-state empty-state" *ngIf="!isLoading && datasets.length === 0 && !errorMessage">
+      No datasets found. Upload your first file.
+    </div>
+
+    <div class="data-state error-state" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="data-state loading-state" *ngIf="isLoading">
+      <div class="spinner"></div> Loading datasets...
+    </div>
+
+    <div class="table-wrapper" *ngIf="!isLoading && datasets.length > 0">
+      <table class="dataset-table">
+        <thead>
+          <tr>
+            <th class="col-name">Name</th>
+            <th class="col-num">Columns</th>
+            <th class="col-num">Rows</th>
+            <th class="col-num">Size</th>
+            <th class="col-action">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ds of datasets">
+            <td class="col-name">
+              <div class="name-cell">
+                <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M4 11v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6H4Z"/><line x1="4" x2="16" y1="15" y2="15"/></svg>
+                <span>{{ ds.name }}</span>
+              </div>
+            </td>
+            <td class="col-num">{{ ds.columns }}</td>
+            <td class="col-num">{{ ds.rows }}</td>
+            <td class="col-num">{{ ds.size }}</td>
+            <td class="col-action">
+              <div class="action-btns">
+                <button class="icon-btn action-view" (click)="openPreview(ds.id, ds.name)" title="Preview Dataset">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="icon-btn action-delete" (click)="deleteDataset(ds.id)" title="Delete Dataset">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Glassmorphism Preview Modal -->
+<div class="modal-overlay" *ngIf="isPreviewOpen">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-titles">
+        <h2>{{ previewDatasetName }}</h2>
+        <span class="badge">Preview Mode (Max 100 Rows)</span>
+      </div>
+      <button class="close-btn" (click)="closePreview()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="data-state loading-state" *ngIf="previewLoading">
+        <div class="spinner"></div> Extracting Dataset...
+      </div>
+      
+      <div class="data-state error-state" *ngIf="previewError && !previewLoading">
+        {{ previewError }}
+      </div>
+      
+      <div class="preview-table-wrapper" *ngIf="!previewLoading && !previewError">
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th *ngFor="let head of previewHeaders">{{ head }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of previewRows">
+              <td *ngFor="let head of previewHeaders">{{ row[head] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
