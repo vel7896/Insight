@@ -35,6 +35,10 @@ app.use('/api/user', userRoutes);
 app.use('/api/datasets', datasetRoutes);
 app.use('/api/admin', adminRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

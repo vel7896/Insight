@@ -48,6 +48,5 @@ Thumbs.db
 *.env
 server/.env
 
-# Server dependencies
+# Backend Node_modules
 server/node_modules/
-
