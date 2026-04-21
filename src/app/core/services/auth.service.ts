@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Auth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, signOut, user, User as FirebaseUser, onAuthStateChanged } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, firstValueFrom } from 'rxjs';
-
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private auth: Auth = inject(Auth);
   private http = inject(HttpClient);
-  private apiUrl = '/api/auth';
+  private apiUrl = environment.apiUrl + '/auth';
 
   user$: Observable<FirebaseUser | null> = user(this.auth);
   private mongoUserSubject = new BehaviorSubject<any>(null);
@@ -23,7 +23,7 @@ export class AuthService {
     }
 
     // Listen for Firebase auth state changes (handles redirects & page refreshes)
-    onAuthStateChanged(this.auth, (firebaseUser) => {
+    onAuthStateChanged(this.auth, (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser && !this.mongoUserSubject.value) {
         // Firebase user is signed in but mongoUser is not set yet
         const userData = {
@@ -57,7 +57,7 @@ export class AuthService {
   getUserStats(): Observable<any> {
     const token = localStorage.getItem('insightflow_token');
     const headers = { 'x-auth-token': token || '' };
-    return this.http.get('/api/user/stats', { headers });
+    return this.http.get(`${environment.apiUrl}/user/stats`, { headers });
   }
 
   // Firebase Google Sign-In

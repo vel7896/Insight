@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  apiUrl: 'https://insightflow-backend.onrender.com/api',
   firebase: {
     apiKey: "AIzaSyBaWgGgWxsUGPCkYCSRoCb3_4225dGD2c4",
     authDomain: "insightflow-a34e3.firebaseapp.com",

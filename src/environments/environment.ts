@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
+  apiUrl: 'http://localhost:9000/api',
   firebase: {
     apiKey: "AIzaSyBaWgGgWxsUGPCkYCSRoCb3_4225dGD2c4",
     authDomain: "insightflow-a34e3.firebaseapp.com",

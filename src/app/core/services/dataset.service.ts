@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import * as XLSX from 'xlsx';
+import { environment } from '../../../environments/environment';
 
 export interface UploadProgress {
   fileName: string;
@@ -14,7 +15,7 @@ export interface UploadProgress {
 })
 export class DatasetService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/datasets';
+  private apiUrl = environment.apiUrl + '/datasets';
 
   private uploadsSubject = new BehaviorSubject<UploadProgress[]>([]);
   uploads$ = this.uploadsSubject.asObservable();
